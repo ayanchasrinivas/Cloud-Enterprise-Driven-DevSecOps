@@ -13,9 +13,16 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir('vulnerable-app') {
-                    sh 'mvn clean verify'
-                }
+                sh '''
+                    echo "Current Directory:"
+                    pwd
+
+                    echo "Workspace:"
+                    ls -la
+
+                    echo "Repository Structure:"
+                    find . -maxdepth 3
+                '''
             }
         }
 
