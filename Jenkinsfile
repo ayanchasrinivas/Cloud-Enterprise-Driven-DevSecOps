@@ -7,7 +7,8 @@ pipeline {
     stages {
         stage('checkout') {
             steps {
-                git 'https://github.com/ayanchasrinivas/Cloud-Enterprise-Driven-DevSecOps.git'
+                git branch: 'main',
+                    url: 'https://github.com/ayanchasrinivas/Cloud-Enterprise-Driven-DevSecOps.git'
             }
         }
 
