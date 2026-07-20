@@ -11,6 +11,17 @@ pipeline {
             }
         }
 
+        stage('Git Debug') {
+            steps {
+                sh '''
+                    git status
+                    git branch
+                    git rev-parse HEAD
+                    git ls-tree -r --name-only HEAD
+                '''
+            }
+        }
+
         stage('Build') {
             steps {
                 sh '''
