@@ -66,6 +66,19 @@ pipeline {
             }
         }
 
+        stage('Trivy Filesystem Scan') {
+            steps{
+                dir('vulnerable-app') {
+                    sh '''
+                        trivy fs \
+                            -- severity HIGH,CRITICAL \
+                            --exit-code 0 \
+                            .
+                    '''
+                }
+            }
+        }
+
         // stage('Quality Gate') {
         //     steps {
         //         timeout(time: 5, unit: 'MINUTES') {
