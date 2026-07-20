@@ -72,7 +72,7 @@ pipeline {
                     sh '''
                         trivy fs \
                             -- severity HIGH,CRITICAL \
-                            --exit-code 0 \
+                            --exit-code 1 \
                             .
                     '''
                 }
