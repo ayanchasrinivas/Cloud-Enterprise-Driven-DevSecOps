@@ -13,17 +13,21 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean verify'
+                dir('vulnerable-app') {
+                    sh 'mvn clean verify'
+                }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                dir('vulnerable-app') {
+                    withSonarQubeEnv('SonarQube') {
                     sh '''
                         mvn sonar:sonar \
                         -Dsonar.projectKey=vulnerable-app
                     '''
+                    }
                 }
             }
         }
