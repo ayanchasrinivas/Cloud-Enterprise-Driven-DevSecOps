@@ -1,7 +1,10 @@
 version: '3.8'
 services: #Jenkins, SonarQube
   jenkins:
-    image: jenkins/jenkins:lts-jdk17
+    build:
+      context: ./jenkins
+      dockerfile: Dockerfile
+    image: devsecops-jenkins:lts
     container_name: jenkins
     privileged: true
     ports:
@@ -10,6 +13,11 @@ services: #Jenkins, SonarQube
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    networks:
+      - jenkins-sonar
 
   sonarqube:
     image: sonarqube:lts-community
@@ -20,7 +28,16 @@ services: #Jenkins, SonarQube
       SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
     volumes:
       - sonar_data:/opt/sonarqube/data
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    networks:
+      - jenkins-sonar
 
 volumes:
   jenkins_home:
   sonar_data:
+
+networks:
+  jenkins-sonar:
+    driver: bridge
