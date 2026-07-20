@@ -11,6 +11,27 @@ pipeline {
             }
         }
 
+        stage('SCM Debug') {
+            steps {
+                sh '''
+                    echo "===== Git Remote ====="
+                    git remote -v
+
+                    echo "===== Current Branch ====="
+                    git branch -a
+
+                    echo "===== HEAD ====="
+                    git rev-parse HEAD
+
+                    echo "===== Last Commit ====="
+                    git log --oneline -1
+
+                    echo "===== Remote Branches ====="
+                    git ls-remote --heads origin
+                '''
+            }
+        }
+
         stage('Git Debug') {
             steps {
                 sh '''
