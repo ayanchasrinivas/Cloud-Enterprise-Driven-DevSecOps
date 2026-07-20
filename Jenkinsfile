@@ -1,35 +1,53 @@
 pipeline {
     agent any
-    tools {
-        maven 'Maven'
+    environment {
+        SONARQUBE = 'SonarQube'
     }
+
     stages {
         stage('checkout') {
             steps {
-                checkout scm
+                git 'https://github.com/ayanchasrinivas/Cloud-Enterprise-Driven-DevSecOps.git'
             }
         }
 
-        stage('compile') {
+        stage('Build') {
             steps {
-                sh 'mvn clean compile'
+                dir('vulnerable-app') {
+                    sh 'mvn clean verify'
+                }
             }
         }
 
         stage('SonarQube Analysis') {
-            environment {
-                scannerHome = tool 'SonarScanner'
-            }
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh """
-                    ${scannerHome}/bin/sonar-scanner \
-                    -Dsonar.projectKey=vulnerable-app \
-                    -Dsonar.sources=src \
-                    -Dsonar.java.binaries=target/classes
-                    """
+                dir('vulnerable-app') {
+                    withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=vulnerable-app
+                    '''
+                    }
                 }
             }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build Passed!'
+        }
+
+        failure {
+            echo 'Build Failed!'
         }
     }
 }
