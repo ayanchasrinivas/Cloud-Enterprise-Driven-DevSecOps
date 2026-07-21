@@ -108,6 +108,19 @@ pipeline {
             }
         }
 
+        stage('Docker Build') {
+            steps {
+                dir('vulnerable-app') {
+                    sh '''
+                        docker build \
+                        -t psychovivek/vulnerable-app:${BUILD_NUMBER} \
+                        -t psychovivek/vulnerable-app:latest \
+                        .
+                    '''
+                }
+            }
+        }
+
         // stage('Quality Gate') {
         //     steps {
         //         timeout(time: 5, unit: 'MINUTES') {
