@@ -76,6 +76,24 @@ pipeline {
                             --exit-code 1 \
                             .
                     '''
+                    sh '''
+                        trivy fs \
+                        --format json \
+                        -o trivy-report.json \
+                        .
+                    '''
+                    sh '''
+                        trivy fs \
+                        --format template \
+                        --template "@/path/to/html.tpl" \
+                        -o trivy-report.html \
+                        .
+                    '''
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'vulnerable-app/trivy-report.*', fingerprint: true
                 }
             }
         }
