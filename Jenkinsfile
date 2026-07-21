@@ -71,7 +71,7 @@ pipeline {
                 dir('vulnerable-app') {
                     sh '''
                         trivy fs \
-                            -- severity HIGH,CRITICAL \
+                            --severity HIGH,CRITICAL \
                             --exit-code 1 \
                             .
                     '''
