@@ -85,7 +85,7 @@ pipeline {
                     sh '''
                         trivy fs \
                         --format template \
-                        --template "@/path/to/html.tpl" \
+                        --template "@/usr/local/share/trivy/templates/html.tpl" \
                         -o trivy-report.html \
                         .
                     '''
