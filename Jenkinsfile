@@ -102,7 +102,7 @@ pipeline {
             steps {
                 dir('vulerable-app') {
                     sh '''
-                        mvn org.cyclonedx-maven-plugin:2.9.2:makeAggregateBom
+                        mvn org.cyclonedx:cyclonedx-maven-plugin:2.9.2:makeAggregateBom
                     '''
                 }
             }
