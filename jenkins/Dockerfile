@@ -1,18 +1,32 @@
 FROM jenkins/jenkins:lts-jdk17
 
 USER root
-RUN apt-get update && apt-get install -y \
-    maven \
-    git \
-    docker.io \
-    curl \
-    unzip \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-    
+
+ENV DC_VERSION=12.1.8
+
+# Install prerequisites
 RUN apt-get update && \
-    apt-get install -y wget gnupg lsb-release && \
-    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor -o /usr/share/keyrings/trivy.gpg && \
+    apt-get install -y \
+        wget \
+        curl \
+        unzip \
+        git \
+        maven \
+        docker.io \
+        gnupg \
+        lsb-release && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Dependency Check
+RUN wget https://github.com/dependency-check/DependencyCheck/releases/download/v${DC_VERSION}/dependency-check-${DC_VERSION}-release.zip && \
+    unzip dependency-check-${DC_VERSION}-release.zip -d /opt && \
+    rm dependency-check-${DC_VERSION}-release.zip && \
+    ln -s /opt/dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
+
+# Install Trivy
+RUN wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | \
+    gpg --dearmor -o /usr/share/keyrings/trivy.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" > /etc/apt/sources.list.d/trivy.list && \
     apt-get update && \
     apt-get install -y trivy && \
@@ -20,5 +34,3 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 USER jenkins
-# COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
-# RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt

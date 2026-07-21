@@ -98,6 +98,16 @@ pipeline {
             }
         }
 
+        stage('Generate SBOM') {
+            steps {
+                dir('vulerable-app') {
+                    sh '''
+                        mvn org.cyclonedx-maven-plugin:2.9.2:makeAggregateBom
+                    '''
+                }
+            }
+        }
+
         // stage('Quality Gate') {
         //     steps {
         //         timeout(time: 5, unit: 'MINUTES') {
@@ -114,6 +124,13 @@ pipeline {
 
         failure {
             echo 'Build Failed!'
+        }
+
+        always {
+            archiveArtifacts artifacts: '''
+                vulnerable-app/target/bom.xml,
+                vulnerable-app/target/bom.json
+            ''', fingerprint: true
         }
     }
 }
