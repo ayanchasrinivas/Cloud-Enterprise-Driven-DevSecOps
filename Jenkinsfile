@@ -100,7 +100,7 @@ pipeline {
 
         stage('Generate SBOM') {
             steps {
-                dir('vulerable-app') {
+                dir('vulnerable-app') {
                     sh '''
                         mvn org.cyclonedx:cyclonedx-maven-plugin:2.9.2:makeAggregateBom
                     '''
