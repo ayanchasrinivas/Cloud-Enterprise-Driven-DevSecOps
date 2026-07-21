@@ -1,6 +1,7 @@
 version: '3.8'
 services: #Jenkins, SonarQube
   jenkins:
+    user: root
     build:
       context: ./jenkins
       dockerfile: Dockerfile

@@ -108,6 +108,19 @@ pipeline {
             }
         }
 
+        stage('Docker Debug') {
+            steps {
+                sh '''
+                    whoami
+                    id
+                    pwd
+                    ls -l /var/run/docker.sock
+                    docker version
+                    docker ps
+                '''
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 dir('vulnerable-app') {
